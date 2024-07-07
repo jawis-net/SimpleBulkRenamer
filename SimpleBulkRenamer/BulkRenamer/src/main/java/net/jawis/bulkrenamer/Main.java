@@ -40,7 +40,7 @@ public class Main {
     }
     
     private static void startApp() {
-        Localization.setDefaultLocale("nl", "NL");
+//        Localization.setDefaultLocale("nl", "NL");
         MainFrame frame = new MainFrame();
     }
 }
