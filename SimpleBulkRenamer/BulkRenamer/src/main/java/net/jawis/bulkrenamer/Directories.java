@@ -93,7 +93,7 @@ public class Directories {
                 try {
                     Desktop.getDesktop().open(file);
                 } catch (IOException e) {
-                    JOptionPane.showMessageDialog(null, "Can not open file: ".concat(filePath), "Open file", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, Resources.getValueFromBundle(PROP_DIALOG, "openFile").concat(filePath), Resources.getValueFromBundle(PROP_DIALOG, "titleOpenFile"), JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -106,7 +106,7 @@ public class Directories {
                 try {
                     Desktop.getDesktop().open(file);
                 } catch (IOException e) {
-                    JOptionPane.showMessageDialog(null, "Can not open directory: ".concat(directoryPath), "Open directory", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, Resources.getValueFromBundle(PROP_DIALOG, "openFolder").concat(directoryPath), Resources.getValueFromBundle(PROP_DIALOG, "titleOpenFolder"), JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -296,7 +296,7 @@ public class Directories {
     
     public static boolean deleteDirectory(Path path, boolean promptForDeleting) {
         if (promptForDeleting) {
-            int dialogResult = JOptionPane.showConfirmDialog(null, Resources.getValueFromBundle(PROP_DIALOG, "deleteFolder").concat(path.getFileName().toString()).concat(Resources.getValueFromBundle(PROP_DIALOG, "deleteFolder2")).concat(" ?"), Resources.getValueFromBundle(PROP_DIALOG, "titleDeleteFolder"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int dialogResult = JOptionPane.showConfirmDialog(null, Resources.getValueFromBundle(PROP_DIALOG, "deleteFolder").concat(path.getFileName().toString()).concat(" ").concat(Resources.getValueFromBundle(PROP_DIALOG, "deleteFolder2")).concat("?"), Resources.getValueFromBundle(PROP_DIALOG, "titleDeleteFolder"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 return deleteDirectory(path);
             } else {
@@ -328,7 +328,7 @@ public class Directories {
                     int dialogResult = JOptionPane.showConfirmDialog(null, Resources.getValueFromBundle(PROP_DIALOG, "deleteAllFilesInDirectory"), Resources.getValueFromBundle(PROP_DIALOG, "titleDeleteFolder"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         deleteAllFilesInDirectory(path);
-                        deleteDirectory(path);
+                        return deleteDirectory(path);
                     }
                 } catch (IOException ex) {
                     LOGGER.info("IOException occurred while deleting directory: ".concat(path.toString()));
@@ -345,7 +345,7 @@ public class Directories {
     
     public static boolean deleteFile(Path path, boolean promptForDeleting) {
         if (promptForDeleting) {
-            int dialogResult = JOptionPane.showConfirmDialog(null, Resources.getValueFromBundle(PROP_DIALOG, "deleteFile").concat(path.getFileName().toString()).concat(Resources.getValueFromBundle(PROP_DIALOG, "deleteFile2")).concat(" ?"), Resources.getValueFromBundle(PROP_DIALOG, "titleDeleteFile"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int dialogResult = JOptionPane.showConfirmDialog(null, Resources.getValueFromBundle(PROP_DIALOG, "deleteFile").concat(path.getFileName().toString()).concat(" ").concat(Resources.getValueFromBundle(PROP_DIALOG, "deleteFile2")).concat("?"), Resources.getValueFromBundle(PROP_DIALOG, "titleDeleteFile"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 return deleteFile(path);
             } else {
