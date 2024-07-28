@@ -7,8 +7,20 @@
     </encoder>
   </appender>
 
-  <property name="LOG_FILE" value="${user.home}/AppData/Roaming/jawis.net/logs/SimpleBulkRenamer/log" />
-  <property name="LOG_FILE_ARCHIVED" value="${user.home}/AppData/Roaming/jawis.net/logs/SimpleBulkRenamer/archived/log" />
+  <if condition='"${os.name}".toLowerCase().contains("windows")'>
+    <then>
+      <property name="LOG_FILE"
+        value="${user.home}/AppData/Roaming/jawis.net/logs/SimpleBulkRenamer/log" />
+      <property name="LOG_FILE_ARCHIVED"
+        value="${user.home}/AppData/Roaming/jawis.net/logs/SimpleBulkRenamer/archived/log" />
+    </then>
+    <else>
+      <property name="LOG_FILE"
+        value="${user.home}/.local/share/simplebulkrenamer/log" />
+      <property name="LOG_FILE_ARCHIVED"
+        value="${user.home}/.local/share/simplebulkrenamer/archived/log" />
+    </else>
+  </if>
 
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOG_FILE}.log</file>
