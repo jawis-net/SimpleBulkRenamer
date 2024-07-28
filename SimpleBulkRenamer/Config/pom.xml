@@ -12,19 +12,10 @@
     <packaging>jar</packaging>
     
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
         <exec.mainClass>net.jawis.config.Config</exec.mainClass>
     </properties>
         
     <dependencies>
-
-        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.5.6</version>
-        </dependency>
         
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
