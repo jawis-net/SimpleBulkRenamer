@@ -55,6 +55,7 @@ public class MenuBar extends JMenuBar {
     private JMenu menuFile = new JMenu(Resources.getValueFromBundle(PROP_MENU, "menuFile"));
     private JMenu menuSettings = new JMenu(Resources.getValueFromBundle(PROP_MENU, "menuSettings"));
     private JMenu menuLanguage = new JMenu(Resources.getValueFromBundle(PROP_MENU, "menuLanguage"));
+    private JMenu menuInfo = new JMenu(Resources.getValueFromBundle(PROP_MENU, "menuInfo"));
     
     private Action changeLangENG = new AbstractAction(Resources.getValueFromBundle(PROP_MENU_ITEM, "langENG")) {
         @Override
@@ -78,11 +79,20 @@ public class MenuBar extends JMenuBar {
         }
     };
     
+    private Action actionAbout = new AbstractAction(Resources.getValueFromBundle(PROP_MENU_ITEM, "infoAbout")) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            FrameAbout frame = new FrameAbout();
+        }
+    };
+    
     
     private JMenuItem fileExit = new JMenuItem(actionExit);
     
     private JMenuItem langENG = new JMenuItem(changeLangENG);
     private JMenuItem langNL = new JMenuItem(changeLangNL);
+    
+    private JMenuItem infoAbout = new JMenuItem(actionAbout);
     
     
     public MenuBar(MainFrame parentFrame) {
@@ -95,19 +105,24 @@ public class MenuBar extends JMenuBar {
     private void initialize() {
         this.add(menuFile);
         this.add(menuSettings);
+        this.add(menuInfo);
         
         menuFile.add(fileExit);
         menuSettings.add(menuLanguage);
         menuLanguage.add(langENG);
         menuLanguage.add(langNL);
+        menuInfo.add(infoAbout);
         
         menuFile.setName("menuFile");
         menuSettings.setName("menuSettings");
         menuLanguage.setName("menuLanguage");
+        menuInfo.setName("menuInfo");
         
         fileExit.setName("fileExit");
         langENG.setName("langENG");
         langNL.setName("langNL");
+        
+        infoAbout.setName("infoAbout");
         
     }
     
@@ -115,9 +130,11 @@ public class MenuBar extends JMenuBar {
         menus.add(menuFile);
         menus.add(menuSettings);
         menus.add(menuLanguage);
+        menus.add(menuInfo);
         menuItems.add(fileExit);
         menuItems.add(langENG);
         menuItems.add(langNL);
+        menuItems.add(infoAbout);
     }
     
     public void changeLanguage() {

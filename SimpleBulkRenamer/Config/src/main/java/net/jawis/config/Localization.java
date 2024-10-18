@@ -69,6 +69,12 @@ public class Localization {
         System.out.println(Locale.getDefault().getLanguage());
     }
     
+    public static String getOptionPaneString(String key) {
+        String text;
+        String propertiesFileName = "dialog";
+        text = Resources.getValueFromBundle(propertiesFileName, key);
+        return text;
+    }
     
     public static void setLanguageForMenus(List<JMenu> components) {
         String text;

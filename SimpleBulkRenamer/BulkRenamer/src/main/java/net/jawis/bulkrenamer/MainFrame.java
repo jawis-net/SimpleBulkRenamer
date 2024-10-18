@@ -27,6 +27,8 @@
 package net.jawis.bulkrenamer;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -51,6 +53,8 @@ public class MainFrame extends javax.swing.JFrame {
     
     private void initialize() {
         this.setJMenuBar(menuBar);
+        Image icon = new ImageIcon(getClass().getResource("/SimpleBulkRenamer.png")).getImage();
+        this.setIconImage(icon);
         this.setLayout(new BorderLayout());
         this.add(panel, BorderLayout.CENTER);
         this.pack();

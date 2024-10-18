@@ -27,8 +27,11 @@
 package net.jawis.bulkrenamer;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
+import net.jawis.config.Localization;
 
 /**
  *
@@ -48,6 +51,8 @@ public class RenamerThread extends Thread {
     private Path path;
     private List<String> extensions;
     private String strPath;
+    
+    private List<String> listFiles = null;
     
     public RenamerThread() {
         this.setDaemon(true);
@@ -90,13 +95,49 @@ public class RenamerThread extends Thread {
         this.suffix = suffix;
     }
     
+    public void setListFiles(List<String> listFiles) {
+        this.listFiles = listFiles;
+    }
+    
     @Override
     public void run() {
-        List<String> files = Directories.listFiles(path, extensions);
-        for (String file : files) {
-            Path srcPath = Path.of(strPath, file);
-            Renamer.renameFile(srcPath, Renamer.newFileName(srcPath, prefix, suffix, separator, addDate, date, dateFormat, datePosition));
+        if (listFiles == null) {
+            listFiles = Directories.listFiles(path, extensions);
         }
+        
+        List<String> listFailedFiles = new ArrayList<>();
+        int totalFiles = listFiles.size();
+        int filesRenamed = 0;
+        int failedFiles = 0;
+        boolean failed = false;
+        
+        for (String file : listFiles) {
+            Path srcPath = Path.of(strPath, file);
+            String newFileName = Renamer.newFileName(srcPath, prefix, suffix, separator, addDate, date, dateFormat, datePosition);
+            if(Renamer.renameFile(srcPath, newFileName)) {
+                filesRenamed++;
+            } else {
+                failed = true;
+                failedFiles++;
+                listFailedFiles.add(file);
+            }
+        }
+        
+        String title = Localization.getOptionPaneString("titleRenamerThread");
+        String msg = Localization.getOptionPaneString("renamerThreadMessage")
+                    .replace("'n'", String.valueOf(filesRenamed))
+                    .replace("'m'", String.valueOf(totalFiles));
+        if (failed) {
+            msg = msg.concat("\n").concat("\n").concat(Localization.getOptionPaneString("renamerThreadMessageFailed"))
+                    .replace("'o'", String.valueOf(failedFiles));
+            for (String file : listFailedFiles) {
+                msg = msg.concat("\n").concat("\t").concat(file);
+            }
+            msg = msg.concat("\n".concat("\n")).concat(Localization.getOptionPaneString("renamerThreadMessageFailed2"));
+        }
+        
+        JOptionPane.showMessageDialog(null, msg, title, JOptionPane.INFORMATION_MESSAGE);
+        
     }
     
 }

@@ -43,6 +43,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -83,9 +84,9 @@ public class MainPanel extends javax.swing.JPanel {
     private String selectedFile;
     private List<String> extensions = null;
     
-    private DefaultListModel<String> listModelFolders = new DefaultListModel<>();
-    private DefaultListModel<String> listModelFiles = new DefaultListModel<>();
-    private DefaultListModel<String> listModelExtensions = new DefaultListModel<>();
+    private DefaultListModel<String> listFolders = new DefaultListModel<>();
+    private DefaultListModel<String> listFiles = new DefaultListModel<>();
+    private DefaultListModel<String> listExtensions = new DefaultListModel<>();
     
     private SimpleDateFormat dateFormatter = new SimpleDateFormat();
     private JCalendar calendar = new JCalendar();
@@ -100,6 +101,8 @@ public class MainPanel extends javax.swing.JPanel {
     private String prefix;
     private String suffix;
     private String fileNamePreview;
+    
+    private List<String> listFilesToRename;
     
     private Stack<Path> stackNext = new Stack();
     private Stack<Path> stackPrev = new Stack();
@@ -233,10 +236,10 @@ public class MainPanel extends javax.swing.JPanel {
     }
     
     private void listFolders() {
-        listModelFolders.clear();
-        listModelFolders.addAll(Directories.listDirectories(directoryPath));
-        lbxFolders.setModel(listModelFolders);
-        if (!listModelFolders.isEmpty()) {
+        listFolders.clear();
+        listFolders.addAll(Directories.listDirectories(directoryPath));
+        lbxFolders.setModel(listFolders);
+        if (!listFolders.isEmpty()) {
             lbxFolders.setSelectedIndex(0);
         }
         listExtensions();
@@ -244,22 +247,22 @@ public class MainPanel extends javax.swing.JPanel {
     }
     
     private void listFiles() {
-        listModelFiles.clear();
-        listModelFiles.addAll(Directories.listFiles(directoryPath, extensions));
-        lbxFiles.setModel(listModelFiles);
-        if (!listModelFiles.isEmpty()) {
+        listFiles.clear();
+        listFiles.addAll(Directories.listFiles(directoryPath, extensions));
+        lbxFiles.setModel(listFiles);
+        if (!listFiles.isEmpty()) {
             lbxFiles.setSelectedIndex(0);
         }
     }
     
     private void listExtensions() {
         isInitializing = true;
-        listModelExtensions.clear();
-        listModelExtensions.addAll(Directories.listExtensions(directoryPath));
-        lbxExtensions.setModel(listModelExtensions);
-        if (!listModelExtensions.isEmpty()) {
-            int[] indices = new int[listModelExtensions.size()];
-            for (int i = 0; i<listModelExtensions.size(); i++) {
+        listExtensions.clear();
+        listExtensions.addAll(Directories.listExtensions(directoryPath));
+        lbxExtensions.setModel(listExtensions);
+        if (!listExtensions.isEmpty()) {
+            int[] indices = new int[listExtensions.size()];
+            for (int i = 0; i<listExtensions.size(); i++) {
                 indices[i] = i;
             }
             lbxExtensions.setSelectedIndices(indices);
@@ -283,6 +286,7 @@ public class MainPanel extends javax.swing.JPanel {
     
     private void selectFile() {
         if (lbxFiles.getSelectedValue() != null) {
+            listFilesToRename = lbxFiles.getSelectedValuesList();
             filePath = Path.of(directoryPath.toString(), lbxFiles.getSelectedValue());
             selectedFile = lbxFiles.getSelectedValue();
             previewFileName();
@@ -365,21 +369,27 @@ public class MainPanel extends javax.swing.JPanel {
         tbxPreviewFileName.setText(fileNamePreview);
     }
     
-    private void renameFileSelected() {
-        if (Renamer.renameFile(filePath, fileNamePreview)) {
-            listFiles();
-        }
+    private void renameFilesSelected() {
+//        if (Renamer.renameFile(filePath, fileNamePreview)) {
+//            listFiles();
+//        }
+        listFilesToRename = lbxFiles.getSelectedValuesList();
+        ThisRenamerThread thread = new ThisRenamerThread();
+        thread.start();
     }
     
     private void renameFiles() {
+        listFilesToRename = Collections.list(listFiles.elements());
         ThisRenamerThread thread = new ThisRenamerThread();
         thread.start();
     }
     
     private class ThisRenamerThread extends Thread {
+        
         @Override
         public void run() {
             RenamerThread thread = new RenamerThread();
+            thread.setListFiles(listFilesToRename);
             thread.setAddDate(addDate);
             thread.setDate(date);
             thread.setDateFormat(dateFormat);
@@ -397,6 +407,7 @@ public class MainPanel extends javax.swing.JPanel {
                 LOGGER.error("InterruptedException: ", ex.getMessage());
             }
         }
+        
     }
     
     private void openFolder() {
@@ -612,7 +623,6 @@ public class MainPanel extends javax.swing.JPanel {
         });
         scrollPaneFolders.setViewportView(lbxFolders);
 
-        lbxFiles.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         lbxFiles.setComponentPopupMenu(popupFiles);
         lbxFiles.setName("lbxFiles"); // NOI18N
         lbxFiles.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -703,7 +713,7 @@ public class MainPanel extends javax.swing.JPanel {
         tbxPreviewFileName.setEditable(false);
         tbxPreviewFileName.setName("tbxPreviewFileName"); // NOI18N
 
-        btnRenameFileSelected.setText("Rename selected file");
+        btnRenameFileSelected.setText("Rename selected files");
         btnRenameFileSelected.setName("btnRenameFileSelected"); // NOI18N
         btnRenameFileSelected.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1067,7 +1077,7 @@ public class MainPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_lbxExtensionsValueChanged
 
     private void btnRenameFileSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenameFileSelectedActionPerformed
-        renameFileSelected();
+        renameFilesSelected();
     }//GEN-LAST:event_btnRenameFileSelectedActionPerformed
 
     private void tbxPrefixKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbxPrefixKeyReleased

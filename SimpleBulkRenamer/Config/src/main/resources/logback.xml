@@ -15,10 +15,20 @@
         value="${user.home}/AppData/Roaming/jawis.net/logs/SimpleBulkRenamer/archived/log" />
     </then>
     <else>
-      <property name="LOG_FILE"
-        value="${user.home}/.local/share/simplebulkrenamer/log" />
-      <property name="LOG_FILE_ARCHIVED"
-        value="${user.home}/.local/share/simplebulkrenamer/archived/log" />
+      <if condition='"${os.name}".toLowerCase().contains("linux")'>
+        <then>
+          <property name="LOG_FILE"
+            value="${user.home}/.local/share/jawis.net/logs/SimpleBulkRenamer/log" />
+          <property name="LOG_FILE_ARCHIVED"
+            value="${user.home}/.local/share/jawis.net/logs/SimpleBulkRenamer/archived/log" />
+        </then>
+        <else>
+          <property name="LOG_FILE"
+            value="${user.home}/Library/jawis.net/logs/SimpleBulkRenamer/log" />
+          <property name="LOG_FILE_ARCHIVED"
+            value="${user.home}/Library/jawis.net/logs/SimpleBulkRenamer/archived/log" />
+        </else>
+      </if>
     </else>
   </if>
 
